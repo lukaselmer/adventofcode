@@ -1,16 +1,17 @@
 import { Point } from "./point";
+
 export class SpiralMatrix {
   private values: number[][] = [];
-  latestValue: Point;
+  lastPoint: Point;
 
   constructor(public center: Point) {
-    this.latestValue = center;
+    this.lastPoint = center;
   }
 
   set(point: Point, value: number) {
     if (!this.values[point.x]) this.values[point.x] = [];
     this.values[point.x][point.y] = value;
-    this.latestValue = point;
+    this.lastPoint = point;
   }
 
   filled(point: Point): boolean {

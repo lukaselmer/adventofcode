@@ -56,8 +56,8 @@ function spiralDistance(limit: number) {
 
 function calcDistance(matrix: SpiralMatrix) {
   return (
-    Math.abs(matrix.center.x - matrix.latestValue.x) +
-    Math.abs(matrix.center.y - matrix.latestValue.y)
+    Math.abs(matrix.center.x - matrix.lastPoint.x) +
+    Math.abs(matrix.center.y - matrix.lastPoint.y)
   );
 }
 
@@ -67,7 +67,7 @@ function spiralFirstLargerValue(limit: number) {
     fillWithSum,
     (_: number, latestValue: number) => latestValue <= limit
   );
-  return matrix.get(new Point(matrix.latestValue.x, matrix.latestValue.y));
+  return matrix.get(new Point(matrix.lastPoint.x, matrix.lastPoint.y));
 }
 
 function fillWithSum(_: number, p: Point, matrix: SpiralMatrix): number {
