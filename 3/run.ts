@@ -1,5 +1,6 @@
 import { SpiralMatrix } from "./spiral-matrix";
 import { sum } from "../utils";
+import { Point } from "./point";
 
 const enum Direction {
   Right,
@@ -12,8 +13,7 @@ type WhileCondition = (currentIndex: number, latestValue: number) => boolean;
 
 type FillFunction = (
   currentIndex: number,
-  x: number,
-  y: number,
+  point: Point,
   matrix: SpiralMatrix
 ) => number;
 
@@ -48,24 +48,16 @@ function print(
 function spiralDistance(limit: number) {
   const matrix = buildSprialMatrix(
     limit,
-    fillWithIndex,
-    distanceWhileCondition(limit)
+    index => index,
+    currentIndex => currentIndex < limit
   );
   return calcDistance(matrix);
 }
 
-function fillWithIndex(index: number) {
-  return index;
-}
-
-function distanceWhileCondition(limit: number): WhileCondition {
-  return currentIndex => currentIndex < limit;
-}
-
 function calcDistance(matrix: SpiralMatrix) {
   return (
-    Math.abs(matrix.centerX - matrix.latestValueX) +
-    Math.abs(matrix.centerY - matrix.latestValueY)
+    Math.abs(matrix.center.x - matrix.latestValue.x) +
+    Math.abs(matrix.center.y - matrix.latestValue.y)
   );
 }
 
@@ -73,36 +65,27 @@ function spiralFirstLargerValue(limit: number) {
   const matrix = buildSprialMatrix(
     limit,
     fillWithSum,
-    largestValueWhileCondition(limit)
+    (_: number, latestValue: number) => latestValue <= limit
   );
-  return matrix.get(matrix.latestValueX, matrix.latestValueY);
+  return matrix.get(new Point(matrix.latestValue.x, matrix.latestValue.y));
 }
 
-function largestValueWhileCondition(limit: number): WhileCondition {
-  return (_currentIndex: number, latestValue: number) => latestValue <= limit;
-}
-
-function fillWithSum(
-  _: number,
-  x: number,
-  y: number,
-  matrix: SpiralMatrix
-): number {
+function fillWithSum(_: number, p: Point, matrix: SpiralMatrix): number {
   const adjacentIndices = [
-    [x - 1, y - 1],
-    [x - 1, y],
-    [x - 1, y + 1],
-    [x, y - 1],
-    [x, y + 1],
-    [x + 1, y - 1],
-    [x + 1, y],
-    [x + 1, y + 1]
+    p.getLeft.getUp,
+    p.getLeft,
+    p.getLeft.getDown,
+    p.getUp,
+    p.getDown,
+    p.getRight.getUp,
+    p.getRight,
+    p.getRight.getDown
   ];
 
   return sum(
     adjacentIndices
-      .filter(point => matrix.filled(point[0], point[1]))
-      .map(point => matrix.get(point[0], point[1]))
+      .filter(point => matrix.filled(point))
+      .map(point => matrix.get(point))
   );
 }
 
@@ -113,41 +96,56 @@ function buildSprialMatrix(
 ): SpiralMatrix {
   const matrixWidth = Math.ceil(Math.sqrt(limit));
 
-  let x = Math.floor(matrixWidth / 2);
-  let y = Math.floor(matrixWidth / 2);
+  const p = new Point(Math.floor(matrixWidth / 2), Math.floor(matrixWidth / 2));
   let nextDirection = Direction.Right;
 
-  const matrix = new SpiralMatrix(x, y);
-
-  matrix.set(x, y, 1);
+  const matrix = new SpiralMatrix(p);
+  matrix.set(p, 1);
 
   for (
     let currentIndex = 1;
-    whileCondition(currentIndex, matrix.get(x, y));
+    whileCondition(currentIndex, matrix.get(p));
     currentIndex++
   ) {
-    switch (nextDirection) {
-      case Direction.Right:
-        x += 1;
-        if (!matrix.filled(x, y - 1)) nextDirection = Direction.Up;
-        break;
-      case Direction.Up:
-        y -= 1;
-        if (!matrix.filled(x - 1, y)) nextDirection = Direction.Left;
-        break;
-      case Direction.Left:
-        x -= 1;
-        if (!matrix.filled(x, y + 1)) nextDirection = Direction.Down;
-        break;
-      case Direction.Down:
-        y += 1;
-        if (!matrix.filled(x + 1, y)) nextDirection = Direction.Right;
-        break;
-    }
-    matrix.set(x, y, fillFun(currentIndex, x, y, matrix));
+    moveInDirection(nextDirection, p);
+    nextDirection = changeDirectionIfNeeded(matrix, nextDirection, p);
+    matrix.set(p, fillFun(currentIndex, p, matrix));
   }
 
   return matrix;
+}
+
+function moveInDirection(direction: Direction, point: Point): void {
+  switch (direction) {
+    case Direction.Right:
+      return point.moveRight();
+    case Direction.Up:
+      return point.moveUp();
+    case Direction.Left:
+      return point.moveLeft();
+    case Direction.Down:
+      return point.moveDown();
+  }
+}
+
+function changeDirectionIfNeeded(
+  matrix: SpiralMatrix,
+  direction: Direction,
+  point: Point
+): Direction {
+  if (direction === Direction.Right && !matrix.filled(point.getUp))
+    return Direction.Up;
+
+  if (direction === Direction.Up && !matrix.filled(point.getLeft))
+    return Direction.Left;
+
+  if (direction === Direction.Left && !matrix.filled(point.getDown))
+    return Direction.Down;
+
+  if (direction === Direction.Down && !matrix.filled(point.getRight))
+    return Direction.Right;
+
+  return direction;
 }
 
 day3();

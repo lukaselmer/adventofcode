@@ -1,29 +1,29 @@
+import { Point } from "./point";
 export class SpiralMatrix {
   private values: number[][] = [];
-  latestValueX: number;
-  latestValueY: number;
+  latestValue: Point;
 
-  constructor(public centerX: number, public centerY: number) {
-    this.latestValueX = centerX;
-    this.latestValueY = centerY;
+  constructor(public center: Point) {
+    this.latestValue = center;
   }
 
-  set(x: number, y: number, value: number) {
-    if (!this.values[x]) this.values[x] = [];
-    this.values[x][y] = value;
-    this.latestValueX = x;
-    this.latestValueY = y;
+  set(point: Point, value: number) {
+    if (!this.values[point.x]) this.values[point.x] = [];
+    this.values[point.x][point.y] = value;
+    this.latestValue = point;
   }
 
-  filled(x: number, y: number): boolean {
-    if (!this.values[x]) return false;
-    return !!this.values[x][y];
+  filled(point: Point): boolean {
+    if (!this.values[point.x]) return false;
+    return !!this.values[point.x][point.y];
   }
 
-  get(x: number, y: number) {
-    if (!this.values[x])
-      throw new Error(`"Null Pointer" exception for x=${x} and y=${y}`);
+  get(point: Point) {
+    if (!this.values[point.x])
+      throw new Error(
+        `"Null Pointer" exception for x=${point.x} and y=${point.y}`
+      );
 
-    return this.values[x][y];
+    return this.values[point.x][point.y];
   }
 }
