@@ -1,0 +1,26 @@
+{
+  "name": "adventofcode",
+  "version": "1.0.0",
+  "description": "Advent of Code Solutions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukaselmer/adventofcode.git"
+  },
+  "keywords": [
+    "adventofcode"
+  ],
+  "author": "Lukas Elmer <lukas.elmer@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukaselmer/adventofcode/issues"
+  },
+  "homepage": "https://github.com/lukaselmer/adventofcode#readme",
+  "dependencies": {
+    "@types/node": "^8.0.54",
+    "ts-node": "^3.3.0"
+  }
+}
