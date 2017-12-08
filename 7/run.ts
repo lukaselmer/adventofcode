@@ -13,6 +13,7 @@ interface YellNode {
   totalWeight: number;
   children: YellNode[];
 }
+
 export function day7() {
   console.log(`Part 1: ${findRoot(readYells()).name}`);
   console.log(`Part 2: ${calcCorrectWeight(readYells())}`);
