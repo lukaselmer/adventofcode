@@ -1,3 +1,4 @@
+import { sum } from "../utils";
 import * as fs from "fs";
 
 class Scanner {
@@ -25,9 +26,12 @@ class Scanner {
     return position === this.scannerPosition;
   }
 
-  reset() {
-    this.scannerPosition = 1;
-    this.movingUpwards = true;
+  hitWhenStartingAt(position: number) {
+    return (position + this.depth) % this.fullTripTime() === 0;
+  }
+
+  private fullTripTime() {
+    return (this.range - 1) * 2;
   }
 }
 
@@ -56,15 +60,11 @@ class Firewall {
       this.severity += scanner.cost();
     }
   }
-
-  reset() {
-    this.severity = 0;
-    this.scanners.forEach(scanner => scanner.reset());
-  }
 }
 
 export function day13() {
   console.log(`Part 1: ${tripSeverity(readFirewall())}`);
+  console.log(`Part 1 alternative: ${tripSeverityAlt(readScanners())}`);
   console.log(`Part 2: ${picosecondsToWait(readScanners())}`);
 }
 
@@ -84,10 +84,7 @@ function readScanners(): Scanner[] {
     });
 }
 
-function tripSeverity(firewall: Firewall, waitFor = 0) {
-  firewall.reset();
-  for (let i = 0; i < waitFor; i++) firewall.tick();
-
+function tripSeverity(firewall: Firewall) {
   for (
     let currentPosition = 0;
     currentPosition <= firewall.size();
@@ -99,17 +96,31 @@ function tripSeverity(firewall: Firewall, waitFor = 0) {
   return firewall.severity;
 }
 
-// This is the analytical solution
-function picosecondsToWait(scanners: Scanner[]) {
-  // TODO: implement this
-  console.log(scanners);
+function tripSeverityAlt(scanners: Scanner[]) {
+  return sum(
+    scanners
+      .filter(scanner => scanner.hitWhenStartingAt(0))
+      .map(scanner => scanner.cost())
+  );
 }
 
-// This is a simulation which works (probably), but takes too long to finish
+function picosecondsToWait(scanners: Scanner[]) {
+  let waitFor = 0;
+  while (getsCaught(scanners, waitFor)) waitFor++;
+  return waitFor;
+}
+
+function getsCaught(scanners: Scanner[], waitFor = 0) {
+  return scanners.some(scanner => scanner.hitWhenStartingAt(waitFor));
+}
+
+// This is a simulation which may work (?), but takes too long to finish (?)
 // function picosecondsToWaitSimulation(firewall: Firewall) {
 //   let waitFor = 0;
 //   while (tripSeverity(firewall, waitFor) !== 0) waitFor++;
 //   return waitFor;
 // }
+// firewall.reset();
+// for (let i = 0; i < waitFor; i++) firewall.tick();
 
 day13();
