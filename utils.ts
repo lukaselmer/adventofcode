@@ -5,3 +5,7 @@ export function sum(list: number[]): number {
 export function flatten<T>(list: T[][]): T[] {
   return list.reduce((all, current) => all.concat(current));
 }
+
+export function generateN(amount: number): number[] {
+  return Array.from(new Array(amount).keys());
+}
