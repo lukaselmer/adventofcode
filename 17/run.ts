@@ -35,12 +35,10 @@ function spinlockValueAfterZero(steps: number) {
 function spinlockValueAfterZero(steps: number) {
   let currentIndex = 0;
   let lastAfter0 = 0;
-  generateN(50000000 - 1)
-    .map(value => value + 1)
-    .forEach(value => {
-      currentIndex = (currentIndex + steps + 1) % value;
-      if (currentIndex === 0) lastAfter0 = value;
-    });
+  for (let value = 1; value <= 50000000; value++) {
+    currentIndex = (currentIndex + steps + 1) % value;
+    if (currentIndex === 0) lastAfter0 = value;
+  }
   return lastAfter0;
 }
 
