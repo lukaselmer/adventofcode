@@ -106,11 +106,9 @@ class ProcSimulator {
   runUntilDeadlock() {
     const p0 = new Registers();
     p0.set("p", 0);
-    p0.pid = 0;
 
     const p1 = new Registers();
     p1.set("p", 1);
-    p1.pid = 1;
 
     while (p0.running || p1.running) {
       while (p0.running) this.run(p0);
@@ -143,7 +141,6 @@ class Registers {
   running = true;
   sendingMessages: number[] = [];
   receivingMessages: number[] = [];
-  pid = 0;
 
   private registers: { [register: string]: number | undefined } = {};
 
@@ -166,7 +163,6 @@ class Registers {
   }
 
   sendMessage(message: number) {
-    // console.log(`Sending ${message} from ${this.pid}`);
     this.sendingMessages.push(message);
     this.sentMessagesCount++;
   }
@@ -177,7 +173,6 @@ class Registers {
 
   receiveMessage() {
     const message = this.receivingMessages.shift();
-    // console.log(`Receiving ${message} in ${this.pid}`);
     if (message === undefined) throw new Error("Invalid message received");
     return message;
   }
