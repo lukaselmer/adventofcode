@@ -1,13 +1,7 @@
 import { SpiralMatrix } from "./spiral-matrix";
 import { sum } from "../utils";
 import { Point } from "./point";
-
-const enum Direction {
-  Right,
-  Up,
-  Left,
-  Down
-}
+import { Direction } from "./direction";
 
 type WhileCondition = (currentIndex: number, latestValue: number) => boolean;
 

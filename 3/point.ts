@@ -1,3 +1,5 @@
+import { Direction } from "./direction";
+
 export class Point {
   constructor(public x: number, public y: number) {}
 
@@ -25,5 +27,17 @@ export class Point {
   }
   moveDown() {
     this.y += 1;
+  }
+  moveInDirection(direction: Direction) {
+    switch (direction) {
+      case Direction.Right:
+        return this.moveRight();
+      case Direction.Up:
+        return this.moveUp();
+      case Direction.Left:
+        return this.moveLeft();
+      case Direction.Down:
+        return this.moveDown();
+    }
   }
 }
