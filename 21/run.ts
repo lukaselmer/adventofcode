@@ -34,6 +34,7 @@ function runIterations(rules: Rules, iterations: number) {
 
 class Rules {
   private rules: Rule[];
+  lookupCache: { [part: string]: string[] } = {};
 
   constructor(rulesStrings: string[]) {
     this.rules = rulesStrings.map(line => {
@@ -43,35 +44,43 @@ class Rules {
   }
 
   apply(part: string[]): string[] {
-    if (this.rules.filter(rule => rule.matches(part)).length > 1)
-      throw new Error(`multiple rules applyable for part \n${part.join("\n")}`);
+    const cachedRule = this.lookupCache[part.join("")];
+    if (cachedRule) return cachedRule;
 
     const rule = this.rules.find(rule => rule.matches(part));
     if (!rule)
       throw new Error(`No matching rule found for \n${part.join("/")}`);
+
+    this.lookupCache[part.join("")] = rule.to;
+
     return rule.to;
   }
 }
 
 class Rule {
-  constructor(public from: string[], public to: string[]) {}
+  fromVariants: string[][];
+  constructor(public from: string[], public to: string[]) {
+    this.fromVariants = [
+      from,
+      this.rotate(from, 1),
+      this.rotate(from, 2),
+      this.rotate(from, 3),
+      this.flip(from),
+      this.flip(this.rotate(from, 1)),
+      this.flip(this.rotate(from, 2)),
+      this.flip(this.rotate(from, 3))
+    ];
+  }
 
   private get size() {
     return this.from.length;
   }
 
   matches(pattern: string[]) {
-    if (pattern.length != this.size) return false;
+    if (pattern.length !== this.size) return false;
 
-    return (
-      this.matchesExactly(pattern) ||
-      this.matchesExactly(this.flip(pattern)) ||
-      this.matchesExactly(this.rotate(pattern, 1)) ||
-      this.matchesExactly(this.rotate(pattern, 2)) ||
-      this.matchesExactly(this.rotate(pattern, 3)) ||
-      this.matchesExactly(this.flip(this.rotate(pattern, 1))) ||
-      this.matchesExactly(this.flip(this.rotate(pattern, 2))) ||
-      this.matchesExactly(this.flip(this.rotate(pattern, 3)))
+    return this.fromVariants.some(variant =>
+      this.matchesExactly(variant, pattern)
     );
   }
 
@@ -108,8 +117,8 @@ class Rule {
     ];
   }
 
-  private matchesExactly(pattern: string[]) {
-    return this.from.every((value, index) => value === pattern[index]);
+  private matchesExactly(a: string[], b: string[]) {
+    return a.every((value, index) => value === b[index]);
   }
 }
 
