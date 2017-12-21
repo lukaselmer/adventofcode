@@ -34,7 +34,7 @@ function runIterations(rules: Rules, iterations: number) {
 
 class Rules {
   private rules: Rule[];
-  lookupCache: { [part: string]: string[] } = {};
+  private lookupCache: { [part: string]: string[] } = {};
 
   constructor(rulesStrings: string[]) {
     this.rules = rulesStrings.map(line => {
@@ -138,7 +138,6 @@ class Artist {
       line.map(part => this.rules.apply(part))
     );
     this.combineImage(newParts);
-    console.log(".");
   }
 
   private splitInTwoByTwo(): string[][][] {
