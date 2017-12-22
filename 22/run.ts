@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import { generateN, sum } from "../utils";
-import { Direction } from "../3/direction";
+import { generateN } from "../utils";
+import { Direction, turnRight, turnLeft, turnAround } from "../3/direction";
 import { Point } from "../3/point";
 
 export function run() {
@@ -46,10 +46,6 @@ class Cells {
     });
   }
 
-  get infectedCount() {
-    return Object.keys(this.map).filter(k => this.map[k]).length;
-  }
-
   infected(point: Point) {
     return this.map[combine(point.y, point.x)] === "#";
   }
@@ -79,18 +75,12 @@ class Cells {
   }
 }
 
-function combine(y: number, x: number) {
-  return `${y}/${x}`;
-}
-
 class Infector {
   direction = Direction.Up;
   position: Point;
-  infectedInBeginning: number;
   infectingBursts = 0;
 
   constructor(public cells: Cells, private part: number) {
-    this.infectedInBeginning = cells.infectedCount;
     this.position = new Point(
       (cells.size - cells.size % 2) / 2,
       (cells.size - cells.size % 2) / 2
@@ -101,7 +91,7 @@ class Infector {
     generateN(iterations).forEach(() => this.iterateOnce());
   }
 
-  iterateOnce() {
+  private iterateOnce() {
     if (this.part === 1) {
       if (this.cells.infected(this.position)) {
         this.turnRight();
@@ -119,8 +109,7 @@ class Infector {
         this.turnRight();
         this.cells.flag(this.position);
       } else if (this.cells.flagged(this.position)) {
-        this.turnRight();
-        this.turnRight();
+        this.turnAround();
         this.cells.clean(this.position);
       } else {
         this.turnLeft();
@@ -131,46 +120,20 @@ class Infector {
     this.moveForward();
   }
 
-  turnRight() {
-    switch (this.direction) {
-      case Direction.Up:
-        this.direction = Direction.Right;
-        break;
-      case Direction.Right:
-        this.direction = Direction.Down;
-        break;
-      case Direction.Down:
-        this.direction = Direction.Left;
-        break;
-      case Direction.Left:
-        this.direction = Direction.Up;
-        break;
-    }
+  private turnAround() {
+    this.direction = turnAround(this.direction);
   }
 
-  turnLeft() {
-    switch (this.direction) {
-      case Direction.Up:
-        this.direction = Direction.Left;
-        break;
-      case Direction.Left:
-        this.direction = Direction.Down;
-        break;
-      case Direction.Down:
-        this.direction = Direction.Right;
-        break;
-      case Direction.Right:
-        this.direction = Direction.Up;
-        break;
-    }
+  private turnRight() {
+    this.direction = turnRight(this.direction);
   }
 
-  moveForward() {
+  private turnLeft() {
+    this.direction = turnLeft(this.direction);
+  }
+
+  private moveForward() {
     this.position.moveInDirection(this.direction);
-  }
-
-  get part1() {
-    return this.infectingBursts;
   }
 
   printMap() {
@@ -196,10 +159,10 @@ class Infector {
     console.log(mapString.join("\n"));
     console.log("--");
   }
+}
 
-  get part2() {
-    return sum([42]);
-  }
+function combine(y: number, x: number) {
+  return `${y}/${x}`;
 }
 
 run();
