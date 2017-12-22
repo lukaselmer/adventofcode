@@ -38,6 +38,8 @@ export class Point {
         return this.moveLeft();
       case Direction.Down:
         return this.moveDown();
+      default:
+        throw new Error(`Invalid direction ${direction}`);
     }
   }
 }

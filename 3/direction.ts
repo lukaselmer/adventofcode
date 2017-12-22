@@ -1,6 +1,6 @@
 export const enum Direction {
-  Right,
-  Up,
-  Left,
-  Down
+  Right = 'right',
+  Up = 'up',
+  Left = 'left',
+  Down = 'down'
 }
