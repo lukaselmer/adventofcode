@@ -31,12 +31,16 @@ export function convertToInstruction(
       return new SetInstruction(register, registerOrValue);
     case "add":
       return new AddInstruction(register, registerOrValue);
+    case "sub":
+      return new SubtractInstruction(register, registerOrValue);
     case "mul":
       return new MultiplyInstruction(register, registerOrValue);
     case "mod":
       return new ModuloInstruction(register, registerOrValue);
     case "jgz":
-      return new JumpInstruction(register, registerOrValue);
+      return new JumpIfGtZeroInstruction(register, registerOrValue);
+    case "jnz":
+      return new JumpIfNotZeroInstruction(register, registerOrValue);
     default:
       throw new Error(
         `Unknown instruction ${operation} with parameters ${register}, ${registerOrValue}`
@@ -103,14 +107,27 @@ abstract class ValueInstruction {
   }
 }
 
-class JumpInstruction extends ValueInstruction {
+abstract class JumpInstruction extends ValueInstruction {
   constructor(register: string, registerOrValue: string | number) {
     super(register, registerOrValue);
   }
 
+  jump(registers: Registers) {
+    registers.currentInstructionIndex += this.getValue(registers) - 1;
+  }
+}
+
+class JumpIfGtZeroInstruction extends JumpInstruction {
   apply(registers: Registers) {
     if (this.register !== "1" && registers.get(this.register) <= 0) return;
-    registers.currentInstructionIndex += this.getValue(registers) - 1;
+    this.jump(registers);
+  }
+}
+
+class JumpIfNotZeroInstruction extends JumpInstruction {
+  apply(registers: Registers) {
+    if (this.register !== "1" && registers.get(this.register) === 0) return;
+    this.jump(registers);
   }
 }
 
@@ -135,6 +152,17 @@ class AddInstruction extends ValueInstruction {
   }
 }
 
+class SubtractInstruction extends ValueInstruction {
+  constructor(register: string, registerOrValue: string | number) {
+    super(register, registerOrValue);
+  }
+
+  apply(registers: Registers) {
+    const newValue = registers.get(this.register) - this.getValue(registers);
+    registers.set(this.register, newValue);
+  }
+}
+
 class MultiplyInstruction extends ValueInstruction {
   constructor(register: string, registerOrValue: string | number) {
     super(register, registerOrValue);
@@ -143,6 +171,7 @@ class MultiplyInstruction extends ValueInstruction {
   apply(registers: Registers) {
     const newValue = registers.get(this.register) * this.getValue(registers);
     registers.set(this.register, newValue);
+    registers.multiplicationsCount += 1;
   }
 }
 

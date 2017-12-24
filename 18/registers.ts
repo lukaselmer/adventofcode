@@ -5,6 +5,7 @@ export class Registers {
   running = true;
   sendingMessages: number[] = [];
   receivingMessages: number[] = [];
+  multiplicationsCount = 0;
 
   private registers: { [register: string]: number | undefined } = {};
 

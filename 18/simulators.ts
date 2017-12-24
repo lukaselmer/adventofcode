@@ -48,3 +48,18 @@ export class ProcSimulator {
     if (registers.running) registers.currentInstructionIndex += 1;
   }
 }
+
+export class CoprocessorSimulator {
+  constructor(private instructions: Instruction[]) {}
+
+  countMultiplications() {
+    const registers = new Registers();
+    while (registers.running) {
+      const instruction = this.instructions[registers.currentInstructionIndex];
+      if (!instruction) break;
+      instruction.apply(registers);
+      registers.currentInstructionIndex += 1;
+    }
+    return registers.multiplicationsCount;
+  }
+}
