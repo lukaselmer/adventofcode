@@ -1,20 +1,28 @@
 import * as fs from "fs";
 
 export function run() {
-  console.log(`Example part 1: ${part1(readParts("example"))}`);
-  console.log(`Part 1: ${part1(readParts("input"))}`);
-  // 1961, 2002 is too low
+  console.log(
+    `Example part 1: ${new BridgeBuilder(
+      readParts("example")
+    ).findStrongestBridge()}`
+  );
+  console.log(
+    `Part 1: ${new BridgeBuilder(readParts("input")).findStrongestBridge()}`
+  );
+  console.log(
+    `Example part 2: ${new BridgeBuilder(
+      readParts("example")
+    ).findLongestBridge()}`
+  );
+  console.log(
+    `Part 2: ${new BridgeBuilder(readParts("input")).findLongestBridge()}`
+  );
 }
 
 let currentID = 1;
 
 function generateID() {
   return currentID++;
-}
-
-function part1(parts: Parts) {
-  const builder = new BridgeBuilder(parts);
-  return builder.findStrongestBridge();
 }
 
 function readParts(filename: string) {
@@ -111,30 +119,49 @@ class Bridge {
     });
     return clone;
   }
+
+  get length() {
+    return Object.keys(this.usedParts).length;
+  }
 }
 
 class BridgeBuilder {
   constructor(public parts: Parts) {}
 
   findStrongestBridge() {
-    const strongest = this.findStrongestBridgeRec(
+    const strongest = this.findBridgeRec(
       new Bridge(),
-      this.parts.parts
+      this.parts.parts,
+      (best, current) => (best.strength >= current.strength ? best : current)
     );
     return strongest.strength;
   }
 
-  findStrongestBridgeRec(bridge: Bridge, parts: Part[]): Bridge {
+  findLongestBridge() {
+    const strongest = this.findBridgeRec(
+      new Bridge(),
+      this.parts.parts,
+      (best, current) => {
+        if (best.length > current.length) return best;
+        if (best.length < current.length) return current;
+        return best.strength >= current.strength ? best : current;
+      }
+    );
+    return strongest.strength;
+  }
+
+  private findBridgeRec(
+    bridge: Bridge,
+    parts: Part[],
+    reduceFn: (previousValue: Bridge, currentValue: Bridge) => Bridge
+  ): Bridge {
     const partCandidates = parts.filter(part => bridge.canAppend(part));
     const bridges = partCandidates.map(part => {
       const clone = bridge.clone();
       clone.append(part);
-      return this.findStrongestBridgeRec(clone, parts.filter(p => p !== part));
+      return this.findBridgeRec(clone, parts.filter(p => p !== part), reduceFn);
     });
-    return bridges.reduce(
-      (best, current) => (best.strength >= current.strength ? best : current),
-      bridge
-    );
+    return bridges.reduce(reduceFn, bridge);
   }
 }
 
