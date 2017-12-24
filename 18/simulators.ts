@@ -49,7 +49,7 @@ export class ProcSimulator {
   }
 }
 
-export class CoprocessorSimulator {
+export class CoprocessorSimulatorDebugMode {
   constructor(private instructions: Instruction[]) {}
 
   countMultiplications() {
@@ -61,5 +61,21 @@ export class CoprocessorSimulator {
       registers.currentInstructionIndex += 1;
     }
     return registers.multiplicationsCount;
+  }
+}
+
+export class CoprocessorSimulatorProductionMode {
+  constructor(private instructions: Instruction[]) {}
+
+  calculateRegisterH() {
+    const registers = new Registers();
+    registers.set("a", 1);
+    while (registers.running) {
+      const instruction = this.instructions[registers.currentInstructionIndex];
+      if (!instruction) break;
+      instruction.apply(registers);
+      registers.currentInstructionIndex += 1;
+    }
+    return registers.get("h");
   }
 }

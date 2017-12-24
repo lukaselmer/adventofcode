@@ -1,15 +1,21 @@
+import { CoprocessorSimulatorProductionMode } from "./../18/simulators";
 import * as fs from "fs";
-import { CoprocessorSimulator } from "../18/simulators";
+import { CoprocessorSimulatorDebugMode } from "../18/simulators";
 import { convertToInstruction } from "../18/instructions";
 
 export function run() {
-  const processor = new CoprocessorSimulator(readInstructions());
-  console.log(`Part 1: ${processor.countMultiplications()}`);
+  const debug = new CoprocessorSimulatorDebugMode(readInstructions("input"));
+  console.log(`Part 1: ${debug.countMultiplications()}`);
+
+  const production = new CoprocessorSimulatorProductionMode(
+    readInstructions("optimized-input")
+  );
+  console.log(`Part 2: ${production.calculateRegisterH()}`);
 }
 
-function readInstructions() {
+function readInstructions(filename: string) {
   return fs
-    .readFileSync(`./23/input.txt`)
+    .readFileSync(`./23/${filename}.txt`)
     .toString()
     .trim()
     .split("\n")
