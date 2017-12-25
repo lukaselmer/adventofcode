@@ -9,3 +9,7 @@ export function flatten<T>(list: T[][]): T[] {
 export function generateN(amount: number): number[] {
   return Array.from(new Array(amount).keys());
 }
+
+export function objectValues<T>(object: { [index: number]: T }): T[] {
+  return Object.keys(object).map(k => object[k as any]);
+}
