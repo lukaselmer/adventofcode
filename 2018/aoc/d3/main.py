@@ -1,5 +1,5 @@
 # from collections import defaultdict
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
 from dataclasses import dataclass
 
@@ -50,21 +50,21 @@ class Claim:
 
 
 class Fabric:
-    _rows: List[List[int]]
+    _rows: List[List[Set[int]]]
 
     def __init__(self, size):
-        self._rows = list(list(0 for _ in range(size)) for _ in range(size))
+        self._rows = list(list(set() for _ in range(size)) for _ in range(size))
 
     def fill(self, claim: Claim):
         for x_cord in range(claim.left, claim.right):
             for y_cord in range(claim.top, claim.bottom):
-                self._rows[x_cord][y_cord] += 1
+                self._rows[x_cord][y_cord].add(claim.identifier)
 
     def count_multi_claimed_square_inches(self):
         count = 0
         for row in self._rows:
             for cell in row:
-                if cell > 1:
+                if len(cell) > 1:
                     count += 1
         return count
 
