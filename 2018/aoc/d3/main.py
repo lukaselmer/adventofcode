@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 
 def multi_claimed_square_inches():
-    fabric = Fabric(1100)
+    fabric = Fabric(1000)
     for claim in _read_input():
         fabric.fill(claim)
     return fabric.count_multi_claimed_square_inches()
