@@ -1,0 +1,19 @@
+#!/bin/bash
+
+BEFORE=`find aoc -type f \( -exec sha1sum "$PWD"/{} \; \) | sha1sum`
+isort --recursive aoc
+if [ $? -ne 0 ] ; then exit 1 ; fi
+AFTER=`find aoc -type f \( -exec sha1sum "$PWD"/{} \; \) | sha1sum`
+if [[ $BEFORE != $AFTER ]] ; then exit 1 ; fi
+
+mypy aoc/**/*.py --ignore-missing-imports
+if [ $? -ne 0 ] ; then exit 1 ; fi
+
+autopep8 -r aoc --in-place --aggressive --aggressive --aggressive --aggressive --aggressive --max-line-length 105
+if [ $? -ne 0 ] ; then exit 1 ; fi
+
+bin/test discover
+if [ $? -ne 0 ] ; then exit 1 ; fi
+
+find ./aoc -name "*.py" -print0 | xargs -0 pylint --disable=missing-docstring --disable=line-too-long --disable=C0412 --disable=C0330 --extension-pkg-whitelist=cassandra
+if [ $? -ne 0 ] ; then exit 1 ; fi

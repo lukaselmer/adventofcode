@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ $1 = "" ]]; then
+  echo "Choose a day (1-25)."
+  exit 1
+else
+  pipenv run python aoc/d$1/main.py
+fi

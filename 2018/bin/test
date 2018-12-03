@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ $1 = "" ]]; then
+  echo "Invalid test. Use \"bin/test <test path> to run a single test.\""
+  echo "Examples:"
+  echo "bin/test aoc.test.test_input.InputTestCase # runs a specific test"
+  echo "bin/test discover # runs all tests"
+  exit 1
+fi
+
+IS_TEST_ENV=1 pipenv run python -m unittest $1
+if [ $? -ne 0 ] ; then exit 1 ; fi
