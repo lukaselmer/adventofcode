@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import List
 
 from dataclasses import dataclass
@@ -21,6 +21,24 @@ def find_most_spleepy_guard():
     [(minute, _counts)] = guard_sleep_minutes.most_common(1)
 
     return minute * guard
+
+
+def find_most_spleepy_timeslot():
+    shifts = _parse_shifts()
+    guard_sleep_minutes = defaultdict(Counter)
+    for shift in shifts:
+        for minute in shift.sleep_minutes():
+            guard_sleep_minutes[shift.guard][minute] += 1
+    most_common_minutes = [
+        _extract_most_common_minute(counter, guard) for guard, counter in guard_sleep_minutes.items()
+    ]
+    (_counts, minute, guard) = max(most_common_minutes)
+    return minute * guard
+
+
+def _extract_most_common_minute(counter: Counter, guard: int):
+    [(minute, counts)] = counter.most_common(1)
+    return (counts, minute, guard)
 
 
 def _parse_shifts():
@@ -118,3 +136,4 @@ class Shift:
 
 if __name__ == "__main__":
     print(find_most_spleepy_guard())
+    print(find_most_spleepy_timeslot())
