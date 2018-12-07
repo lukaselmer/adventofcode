@@ -3,8 +3,24 @@ from __future__ import annotations
 from typing import List
 
 
+def calculate_shortest_polymer_length():
+    polymer = list(_read_input())
+    letters = {letter.lower() for letter in polymer}
+    return min([_trigger_all_reactions_without(polymer, letter) for letter in letters])
+
+
+def _trigger_all_reactions_without(polymer: List[str], letter_filter: str):
+    print(letter_filter)
+    shorter_polymer = [letter for letter in polymer if letter_filter != letter.lower()]
+    return _trigger_all_reactions(shorter_polymer)
+
+
 def calculate_polymer_length():
     polymer = list(_read_input())
+    return _trigger_all_reactions(polymer)
+
+
+def _trigger_all_reactions(polymer: List[str]):
     while _react_on(polymer):
         pass
     return len(polymer)
@@ -32,4 +48,5 @@ def _can_react(char_a: str, char_b: str):
 
 
 if __name__ == "__main__":
-    print(calculate_polymer_length())
+    # print(calculate_polymer_length())
+    print(calculate_shortest_polymer_length())
