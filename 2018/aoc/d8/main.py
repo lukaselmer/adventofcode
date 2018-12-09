@@ -6,9 +6,17 @@ from dataclasses import dataclass
 
 
 def metadata_sum():
+    return _parse_tree().metadata_sum()
+
+
+def supervalue():
+    return _parse_tree().supervalue()
+
+
+def _parse_tree():
     tree, rest = _parse_node(_read_input())
     assert not rest
-    return tree.metadata_sum()
+    return tree
 
 
 def _parse_node(unparsed_input: List[int]):
@@ -35,6 +43,19 @@ class Node:
     def metadata_sum(self):
         return sum(self.metadata) + sum([child.metadata_sum() for child in self.children])
 
+    def supervalue(self):
+        if not self.children:
+            return sum(self.metadata)
+
+        return sum(
+            [
+                self.children[meta - 1].supervalue()
+                for meta in self.metadata
+                if meta and meta <= len(self.children)
+            ]
+        )
+
 
 if __name__ == "__main__":
     print(metadata_sum())
+    print(supervalue())
