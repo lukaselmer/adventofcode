@@ -33,6 +33,7 @@ def find_largest_area():
             if y_coord == 0 or x_coord == 0 or y_coord == len(matrix) - 1 or x_coord == len(matrix[0]):
                 counts[field.value] = 0
 
+    print(counts)
     return max(counts.values())
 
 
@@ -107,5 +108,33 @@ class Field:
         return True
 
 
+def count_fields_within(distance: int):
+    pairs: List[Tuple[int, int]] = list(_read_input())
+    height = max([x for (x, _) in pairs]) + 2
+    width = max([y for (_, y) in pairs]) + 2
+
+    # print(_count_distance(pairs, (4, 3)))
+    # print(_count_distance(pairs, (0, 0)))
+    # print(_count_distance(pairs, (height, 0)))
+    # print(_count_distance(pairs, (0, width)))
+    # print(_count_distance(pairs, (height, width)))
+
+    counter = 0
+    for x_coord in range(0, width):
+        for y_coord in range(0, height):
+            total_distance = _count_distance(pairs, (x_coord, y_coord))
+            if total_distance < distance:
+                counter += 1
+    return counter
+
+
+def _count_distance(pairs, coord):
+    distance = 0
+    for x_coord, y_coord in pairs:
+        distance += abs(x_coord - coord[0]) + abs(y_coord - coord[1])
+    return distance
+
+
 if __name__ == "__main__":
-    print(find_largest_area())
+    # print(find_largest_area())
+    print(count_fields_within(10000))
