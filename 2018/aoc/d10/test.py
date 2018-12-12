@@ -25,6 +25,11 @@ class TestCase(unittest.TestCase):
                 simulator.simulate_step()
                 self.assertEqual(step_output, str(simulator))
 
+    def test_run(self):
+        with patch("builtins.open", mock_open(read_data=readlines("aoc/d10/example.txt"))):
+            simulator = Simulator()
+            self.assertEqual(3, simulator.run())
+
 
 if __name__ == "__main__":
     unittest.main()

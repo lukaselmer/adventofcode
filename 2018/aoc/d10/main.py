@@ -35,15 +35,13 @@ class Simulator:
         return "\n".join(["".join(row) for row in matrix])
 
     def run(self):
+        seconds = 0
         while not self._interesting_lights():
             # print(".", end="", flush=True)
             self.simulate_step()
+            seconds += 1
         self.unsimulate_step()
-        print()
-        print()
-        print(self)
-        print()
-        print()
+        return seconds - 1
 
     def simulate_step(self):
         for light in self.lights:
@@ -92,5 +90,15 @@ def _read_input():
                 yield tuple(map(int, simlified.split(" ")))
 
 
+def main():
+    simulator = Simulator()
+    seconds = simulator.run()
+    print()
+    print(simulator)
+    print()
+    print(f"Message appeared after {seconds} seconds")
+    print()
+
+
 if __name__ == "__main__":
-    Simulator().run()
+    main()
