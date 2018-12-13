@@ -49,10 +49,43 @@ def _sum_in_square(cache: Dict[Any, int], matrix: List[List[int]], position: Tup
     if size == 1:
         return matrix[position[0]][position[1]]
 
-    additional_sum = sum(
-        [matrix[position[0] + size - 1][position[1] + y_coord] for y_coord in range(0, size)]
-    ) + sum([matrix[position[0] + x_coord][position[1] + size - 1] for x_coord in range(0, size - 1)])
-    cache[cache_key] = _sum_in_square(cache, matrix, position, size - 1) + additional_sum
+    cache[cache_key] = (
+        _sum_in_square(cache, matrix, position, size - 1)
+        + _sum_horizontal_line(cache, matrix, (position[0] + size - 1, position[1]), size)
+        + _sum_vertical_line(cache, matrix, (position[0], position[1] + size - 1), size - 1)
+    )
+    return cache[cache_key]
+
+
+def _sum_horizontal_line(
+    cache: Dict[Any, int], matrix: List[List[int]], position: Tuple[int, int], size: int
+):
+    if size == 1:
+        return matrix[position[0]][position[1]]
+
+    cache_key = (-1, position[0], position[1], size)
+    if not cache_key in cache:
+        cache[cache_key] = (
+            _sum_horizontal_line(cache, matrix, position, size - 1)
+            + matrix[position[0]][position[1] + size - 1]
+        )
+
+    return cache[cache_key]
+
+
+def _sum_vertical_line(
+    cache: Dict[Any, int], matrix: List[List[int]], position: Tuple[int, int], size: int
+):
+    if size == 1:
+        return matrix[position[0]][position[1]]
+
+    cache_key = (-2, position[0], position[1], size)
+    if not cache_key in cache:
+        cache[cache_key] = (
+            _sum_vertical_line(cache, matrix, position, size - 1)
+            + matrix[position[0] + size - 1][position[1]]
+        )
+
     return cache[cache_key]
 
 
