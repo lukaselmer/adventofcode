@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import mock_open, patch
 
 from aoc.d11.main import _calculate_value, largest_grid_value_coords, largest_grid_value_coords_of_3x3
 
