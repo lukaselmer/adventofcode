@@ -30,23 +30,29 @@ def _matrix(serial_number: int):
 
 def _largest_grid_value_coords_of(matrix: List[List[int]], size: int):
     maximum = ((-1, -1), -1_000_000)
-    for x_coord in range(0, 302 - size):
-        for y_coord in range(0, 302 - size):
-            current_sum = _sum_in_square(matrix, (x_coord, y_coord), size)
+    current_sum = -999_999_999
+    for y_coord in range(0, 302 - size):
+        for x_coord in range(0, 302 - size):
+            current_sum = _sum_in_square(current_sum, matrix, (x_coord, y_coord), size)
             if maximum[1] < current_sum:
                 maximum = ((x_coord + 1, y_coord + 1), current_sum)
 
     return maximum
 
 
-def _sum_in_square(matrix: List[List[int]], position: Tuple[int, int], size: int):
-    return sum(
-        [
-            matrix[position[0] + x_coord][position[1] + y_coord]
-            for x_coord in range(0, size)
-            for y_coord in range(0, size)
-        ]
-    )
+def _sum_in_square(prev_sum: int, matrix: List[List[int]], position: Tuple[int, int], size: int):
+    if position[0] == 0:
+        return sum(
+            [
+                matrix[position[0] + x_coord][position[1] + y_coord]
+                for x_coord in range(0, size)
+                for y_coord in range(0, size)
+            ]
+        )
+    for y_coord in range(0, size):
+        prev_sum -= matrix[position[0] - 1][position[1] + y_coord]
+        prev_sum += matrix[position[0] + size - 1][position[1] + y_coord]
+    return prev_sum
 
 
 def _calculate_value(serial_number: int, position: Tuple[int, int]):
