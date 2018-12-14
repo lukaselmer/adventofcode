@@ -5,9 +5,9 @@ from typing import Dict, Tuple, cast
 from dataclasses import dataclass
 
 
-def sum_pot_numbers_containing_plants():
+def sum_pot_numbers_containing_plants(generations=20):
     cellar = _read_cellar()
-    for _ in range(0, 20):
+    for _ in range(0, generations):
         cellar.simulate()
     return cellar.sum_pot_numbers_containing_plants()
 
@@ -81,3 +81,4 @@ class Cellar:
 
 if __name__ == "__main__":
     print(sum_pot_numbers_containing_plants())
+    print(sum_pot_numbers_containing_plants(50000000000))
