@@ -5,13 +5,20 @@ from typing import List
 from dataclasses import dataclass
 
 
+def surviving_cart(filename: str):
+    track = Track(_read_input(filename))
+
+    while len(track.carts) > 1:
+        track.tick(stop_on_crash=False)
+
+    return (track.carts[0].y, track.carts[0].x)
+
+
 def first_crash_location(filename: str):
     track = Track(_read_input(filename))
     while True:
-        # print(track)
-        crash = track.tick()
+        crash = track.tick(stop_on_crash=True)
         if crash:
-            # print(track)
             return crash
 
 
@@ -55,23 +62,33 @@ class Track:
         )
         return f"{track}\n{self.carts}\n"
 
-    def tick(self):
+    def tick(self, stop_on_crash):
         self.carts.sort(key=lambda cart: (cart.x, cart.y))
 
+        crashed = False
         for cart in self.carts:
             crash_coordinate = self._move_cart(cart)
             if crash_coordinate:
-                return crash_coordinate
+                if stop_on_crash:
+                    return crash_coordinate
+                crashed = True
+
+        if crashed:
+            self.carts = [cart for cart in self.carts if not cart.crashed]
 
         return None
 
     def _move_cart(self, cart):
+        if cart.crashed:
+            return None
+
         del self.cart_lookup[(cart.x, cart.y)]
         cart.tick()
 
         if (cart.x, cart.y) in self.cart_lookup:
             cart.crash()
             self.cart_lookup[(cart.x, cart.y)].crash()
+            del self.cart_lookup[(cart.x, cart.y)]
             return (cart.y, cart.x)
 
         self.cart_lookup[(cart.x, cart.y)] = cart
@@ -121,6 +138,11 @@ class Cart:
     def crash(self):
         self.direction = "X"
 
+    @property
+    def crashed(self):
+        return self.direction == "X"
+
 
 if __name__ == "__main__":
     print(first_crash_location("input"))
+    print(surviving_cart("input"))
