@@ -8,28 +8,39 @@ def time_to_produce(goal_recipies_str: str):
     recipies = [3, 7, 1, 0, 1, 0, 1]
     index = 0
     goal_recipies = list(map(int, list(goal_recipies_str)))
-    length = len(goal_recipies)
     while True:
         number_of_new_recipies, elf_positions = _make_recipies(elf_positions, recipies)
         if number_of_new_recipies == 1:
-            for offset in range(0, length):
-                if recipies[index + offset] != goal_recipies[offset]:
-                    break
-                if offset == length - 1:
-                    return index
+            if (
+                recipies[index] == goal_recipies[0]
+                and recipies[index + 1] == goal_recipies[1]
+                and recipies[index + 2] == goal_recipies[2]
+                and recipies[index + 3] == goal_recipies[3]
+                and recipies[index + 4] == goal_recipies[4]
+                and recipies[index + 5] == goal_recipies[5]
+            ):
+                return index
             index += 1
         else:
-            for offset in range(0, length):
-                if recipies[index + offset] != goal_recipies[offset]:
-                    break
-                if offset == length - 1:
-                    return index
+            if (
+                recipies[index] == goal_recipies[0]
+                and recipies[index + 1] == goal_recipies[1]
+                and recipies[index + 2] == goal_recipies[2]
+                and recipies[index + 3] == goal_recipies[3]
+                and recipies[index + 4] == goal_recipies[4]
+                and recipies[index + 5] == goal_recipies[5]
+            ):
+                return index
             index += 1
-            for offset in range(0, length):
-                if recipies[index + offset] != goal_recipies[offset]:
-                    break
-                if offset == length - 1:
-                    return index
+            if (
+                recipies[index] == goal_recipies[0]
+                and recipies[index + 1] == goal_recipies[1]
+                and recipies[index + 2] == goal_recipies[2]
+                and recipies[index + 3] == goal_recipies[3]
+                and recipies[index + 4] == goal_recipies[4]
+                and recipies[index + 5] == goal_recipies[5]
+            ):
+                return index
             index += 1
 
 
