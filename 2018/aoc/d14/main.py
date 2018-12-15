@@ -3,7 +3,24 @@ from __future__ import annotations
 from typing import List, Tuple
 
 
-def time_to_produce(goal_recipies: str):
+def time_to_produce(goal_recipies_str: str):
+    elf_positions = (0, 1)
+    recipies = [3, 7]
+    index = 0
+    goal_recipies = list(map(int, list(goal_recipies_str)))
+    length = len(goal_recipies)
+    while True:
+        elf_positions = _make_recipies(elf_positions, recipies)
+        while len(recipies) >= index + length + 2:
+            for offset in range(0, length):
+                if recipies[index + offset] != goal_recipies[offset]:
+                    break
+                if offset == length - 1:
+                    return index
+            index += 1
+
+
+def time_to_produce_slow(goal_recipies: str):
     elf_positions = (0, 1)
     recipies = [3, 7]
     index = 0
