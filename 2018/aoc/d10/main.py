@@ -18,11 +18,9 @@ class Light:
 
 
 class Simulator:
-    lights: List[Light]
-    last_field_size = 999_999_999
-
     def __init__(self):
-        self.lights = _parse_coordinates()
+        self.last_field_size = 999_999_999
+        self.lights: List[Light] = _parse_coordinates()
 
     def __str__(self):
         x_min = min([light.coords[0] for light in self.lights])

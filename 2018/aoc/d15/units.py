@@ -4,13 +4,10 @@ from aoc.d15.point import Point, next_to_each_other
 
 
 class Unit:
-    position: Point
-    attack_power: int
-    hit_points = 200
-
     def __init__(self, position: Point, attack_power: int):
         self.position = position
         self.attack_power = attack_power
+        self.hit_points = 200
 
     @property
     def display(self):

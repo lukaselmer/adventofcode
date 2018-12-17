@@ -37,11 +37,9 @@ def _read_input(filename: str):
 
 
 class Game:
-    dimensions: Point
-    rounds = 0
-
     def __init__(self, lines: List[str], attack_power: int):
-        self.dimensions = (len(lines), len(lines[0]))
+        self.rounds = 0
+        self.dimensions: Point = (len(lines), len(lines[0]))
         self.fields = {
             (x, y): parse_field((x, y), field, attack_power)
             for x, line in enumerate(lines)

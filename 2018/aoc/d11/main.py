@@ -7,7 +7,7 @@ def largest_grid_value_coords(serial_number: int):
     cache: Dict[Any, int] = dict()
     maximum = ((-1, -1, -1), -1_000_000)
     for size in range(1, 301):
-        print(size, end=" ", flush=True)
+        # print(size, end=" ", flush=True)
         current = _largest_grid_value_coords_of(cache, _matrix(serial_number), size)
         if maximum[1] < current[1]:
             maximum = ((current[0][0], current[0][1], size), current[1])

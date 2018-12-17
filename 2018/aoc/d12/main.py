@@ -58,11 +58,6 @@ LocalState = Tuple[bool, bool, bool, bool, bool]
 
 
 class Cellar:
-    state: Dict[int, bool]
-    rules: Dict[LocalState, bool]
-    min_index: int
-    max_index: int
-
     def __init__(self, state: Dict[int, bool], rules: Dict[LocalState, bool]):
         self.state = state
         self.rules = rules

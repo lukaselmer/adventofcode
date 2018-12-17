@@ -19,8 +19,6 @@ def parse_field(position: Point, raw_field: str, elf_attack_power: int):
 
 
 class FieldBase:
-    position: Point
-
     def __init__(self, position: Point):
         self.position = position
 
@@ -52,11 +50,9 @@ class Wall(FieldBase):
 
 
 class Field(FieldBase):
-    unit: Optional[Unit]
-
     def __init__(self, position: Point, unit: Optional[Unit] = None):
         super().__init__(position)
-        self.unit = unit
+        self.unit: Optional[Unit] = unit
 
     def has_unit(self):
         return self.unit and not self.unit.dead

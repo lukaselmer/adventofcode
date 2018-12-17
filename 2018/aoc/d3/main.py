@@ -45,10 +45,8 @@ class Claim:
 
 
 class Fabric:
-    _rows: List[List[Set[int]]]
-
     def __init__(self, size):
-        self._rows = list(list(set() for _ in range(size)) for _ in range(size))
+        self._rows: List[List[Set[int]]] = list(list(set() for _ in range(size)) for _ in range(size))
 
     def fill(self, claim: Claim):
         for x_cord in range(claim.left, claim.right):
