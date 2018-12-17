@@ -6,15 +6,15 @@ from aoc.d15.point import Point
 from aoc.d15.units import Elf, Goblin, Unit
 
 
-def parse_field(position: Point, raw_field: str):
+def parse_field(position: Point, raw_field: str, elf_attack_power: int):
     if raw_field == "#":
         return Wall(position)
     if raw_field == ".":
         return Field(position)
     if raw_field == "G":
-        return Field(position, Goblin(position))
+        return Field(position, Goblin(position, 3))
     if raw_field == "E":
-        return Field(position, Elf(position))
+        return Field(position, Elf(position, elf_attack_power))
     raise RuntimeError(f"Invalid field {raw_field}")
 
 

@@ -7,15 +7,28 @@ from aoc.d15.point import Point, neighbors, next_to_each_other
 from aoc.d15.units import Unit
 
 
+def lowest_required_attack_power(filename: str):
+    for elf_attack_power in range(4, 999_999_999):
+        game = _simulate(filename, elf_attack_power)
+        if game.flawless_elf_victory():
+            return game.score()
+    raise RuntimeError("All the elves are dead...")
+
+
 def simulate(filename: str):
-    game = _load_game(filename)
-    while game.has_enimies():
-        game.tick()
+    game = _simulate(filename, 3)
     return game.score()
 
 
-def _load_game(filename: str):
-    return Game(_read_input(filename))
+def _simulate(filename: str, elf_attack_power: int):
+    game = _load_game(filename, elf_attack_power)
+    while game.has_enimies():
+        game.tick()
+    return game
+
+
+def _load_game(filename: str, elf_attack_power: int):
+    return Game(_read_input(filename), elf_attack_power)
 
 
 def _read_input(filename: str):
@@ -27,10 +40,10 @@ class Game:
     dimensions: Point
     rounds = 0
 
-    def __init__(self, lines: List[str]):
+    def __init__(self, lines: List[str], attack_power: int):
         self.dimensions = (len(lines), len(lines[0]))
         self.fields = {
-            (x, y): parse_field((x, y), field)
+            (x, y): parse_field((x, y), field, attack_power)
             for x, line in enumerate(lines)
             for y, field in enumerate(line)
         }
@@ -46,10 +59,6 @@ class Game:
 
     def has_enimies(self):
         return self._identify_enemies(self.alive_units[0])
-
-    def score(self):
-        hit_points = [unit.hit_points for unit in self.alive_units]
-        return sum(hit_points) * self.rounds
 
     def fields_as_str(self):
         return "\n".join(
@@ -147,6 +156,15 @@ class Game:
     def _attack_lowest_hp_enemy(attacker: Unit, enemies: List[Unit]):
         min(enemies, key=lambda enemy: enemy.hit_points).attacked_by(attacker)
 
+    def score(self):
+        hit_points = [unit.hit_points for unit in self.alive_units]
+        return sum(hit_points) * self.rounds
+
+    def flawless_elf_victory(self):
+        dead_elves = [unit for unit in self.units if unit.dead and unit.elf]
+        return not dead_elves
+
 
 if __name__ == "__main__":
     print(simulate("input"))
+    print(lowest_required_attack_power("input"))
