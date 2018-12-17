@@ -4,7 +4,6 @@ from aoc.d16.operations import Recording, matching_operations
 from aoc.d16.operators import (
     ALL,
     OperationParams,
-    Registers,
     addi,
     addr,
     bani,
