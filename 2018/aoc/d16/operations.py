@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Tuple
 
-from aoc.d16.operators import ALL, Operation, OperationParams, Registers
+from aoc.d16.operators import ALL, Operation, OperationParams
 from dataclasses import dataclass
 
 InputRegisters = Tuple[int, int, int, int]
@@ -13,7 +13,7 @@ def matching_operations(recording: Recording):
 
 
 def _matches(recording: Recording, operation: Operation):
-    registers = Registers(*[(index, recording.before[index]) for index in range(0, 4)])
+    registers = list(recording.before)
     operation(registers, recording.params)
     actual = (registers[0], registers[1], registers[2], registers[3])
     return actual == recording.after
@@ -23,5 +23,5 @@ def _matches(recording: Recording, operation: Operation):
 class Recording:
     before: InputRegisters
     after: InputRegisters
-    operation_id: int
+    opcode: int
     params: OperationParams

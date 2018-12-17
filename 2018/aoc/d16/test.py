@@ -26,7 +26,7 @@ from aoc.d16.operators import (
 
 class OperatorTestCase(unittest.TestCase):
     def setUp(self):
-        self.registers = Registers((1, 5), (2, 10), (3, 7), (4, 30), (5, 5), (6, 10))
+        self.registers = [0, 5, 10, 7, 30, 5, 10]
 
     def test_addr(self):
         addr(self.registers, OperationParams(1, 2, 3))
@@ -135,7 +135,7 @@ class OperatorTestCase(unittest.TestCase):
 class OperatironsTestCase(unittest.TestCase):
     def test_number_of_matching_operators(self):
         recording = Recording(
-            before=(3, 2, 1, 1), after=(3, 2, 2, 1), operation_id=-1, params=OperationParams(2, 1, 2)
+            before=(3, 2, 1, 1), after=(3, 2, 2, 1), opcode=-1, params=OperationParams(2, 1, 2)
         )
         operations = matching_operations(recording)
         self.assertSetEqual(operations, set(["mulr", "addi", "seti"]))

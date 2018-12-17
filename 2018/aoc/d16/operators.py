@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from collections import defaultdict
-from typing import Callable, DefaultDict, Dict, Iterable, Tuple
+from typing import Callable, Dict, List
 
 from dataclasses import dataclass
+
+Registers = List[int]
 
 
 def addr(reg: Registers, params: OperationParams):
@@ -68,27 +69,6 @@ def eqri(reg: Registers, params: OperationParams):
 
 def eqrr(reg: Registers, params: OperationParams):
     reg[params.c] = 1 if reg[params.a] == reg[params.b] else 0
-
-
-class Registers:
-    _contents: DefaultDict[int, int] = defaultdict(int)
-
-    def __init__(self, *args: Tuple[int, int]):
-        for index, content in args:
-            self._contents[index] = content
-
-    def reset(self):
-        self._contents = defaultdict(int)
-
-    def set_all(self, registers: Iterable[int]):
-        for index, content in enumerate(registers):
-            self._contents[index] = content
-
-    def __getitem__(self, register_index: int):
-        return self._contents[register_index]
-
-    def __setitem__(self, register_index: int, value: int):
-        self._contents[register_index] = value
 
 
 @dataclass
