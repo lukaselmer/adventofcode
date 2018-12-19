@@ -4,12 +4,20 @@ from typing import Iterable, Set, Tuple
 
 
 def count_reachable_tiles(filename: str):
+    maze = _simulate(filename)
+    return maze.wet_tiles()
+
+
+def count_still_water_tiles(filename: str):
+    maze = _simulate(filename)
+    return maze.still_water_tiles()
+
+
+def _simulate(filename: str):
     maze = _read_maze(filename)
     while maze.simulate_step():
-        # print(maze)
         pass
-    # print(maze)
-    return maze.wet_tiles()
+    return maze
 
 
 def _read_maze(filename: str):
@@ -133,14 +141,14 @@ class Maze:
         return coord in self._clay or coord in self._still_water
 
     def wet_tiles(self):
+        return self._count_relevant_tiles(self._running_water | self._still_water)
+
+    def still_water_tiles(self):
+        return self._count_relevant_tiles(self._still_water)
+
+    def _count_relevant_tiles(self, tiles: Set[Coordinate]):
         count_from_height = min([coordinate[1] for coordinate in self._clay])
-        return len(
-            {
-                (x, y)
-                for x, y in (self._running_water | self._still_water)
-                if count_from_height <= y <= self._height
-            }
-        )
+        return len([None for x, y in tiles if count_from_height <= y <= self._height])
 
     def _at(self, coordinate: Coordinate):
         if coordinate in self._still_water:
@@ -177,3 +185,4 @@ def _line_range(left: Coordinate, right: Coordinate):
 
 if __name__ == "__main__":
     print(count_reachable_tiles("input"))
+    print(count_still_water_tiles("input"))
