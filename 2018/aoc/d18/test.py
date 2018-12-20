@@ -11,13 +11,15 @@ def readlines(filename):
 
 class TestCase(unittest.TestCase):
     def test_simulate_1_turn(self):
-        self.assertEqual(_fields_str(simulate("example-input", turns=1)), readlines("example-1-turn"))
+        self.assertEqual(_fields_str(simulate("example-input", 1, dict())), readlines("example-1-turn"))
 
     def test_simulate_10_turns(self):
-        self.assertEqual(_fields_str(simulate("example-input", turns=10)), readlines("example-10-turn"))
+        self.assertEqual(
+            _fields_str(simulate("example-input", 10, dict())), readlines("example-10-turn")
+        )
 
     def test_resource_values_after_10_turns(self):
-        self.assertEqual(resource_values("example-input", turns=10), 1147)
+        self.assertEqual(resource_values("example-input", 10), 1147)
 
 
 if __name__ == "__main__":

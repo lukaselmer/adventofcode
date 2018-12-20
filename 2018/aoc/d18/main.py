@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import List
+from typing import Dict, Tuple
 
-Fields = List[List[str]]
-
+Fields = Tuple[Tuple[str, ...], ...]
+Cache = Dict[Fields, Fields]
 
 OPEN = "."
 TREE = "|"
@@ -11,18 +11,45 @@ LUMBERYARD = "#"
 
 
 def resource_values(filename: str, turns: int):
-    fields = simulate(filename, turns)
+    cache: Cache = dict()
+    fields = simulate(filename, turns, cache)
+    return _values(fields)
+
+
+def simulate(filename: str, turns: int, cache: Cache):
+    fields = _read_magical_fields(filename)
+    last_cache_size = 0
+    turns_left = turns
+
+    for _ in range(turns):
+        turns_left -= 1
+        fields = _turn(fields, cache)
+        if len(cache) == last_cache_size:
+            break
+        last_cache_size = len(cache)
+
+    cycle_length = 0
+    fields_before_cycle = fields
+    for _ in range(turns_left):
+        turns_left -= 1
+        fields = _turn(fields, cache)
+        cycle_length += 1
+        if fields == fields_before_cycle:
+            break
+
+    turns_left %= cycle_length
+
+    for _ in range(turns_left):
+        fields = _turn(fields, cache)
+
+    return fields
+
+
+def _values(fields: Fields):
     flat_fields = [field for row in fields for field in row]
     return len([field for field in flat_fields if field == TREE]) * len(
         [field for field in flat_fields if field == LUMBERYARD]
     )
-
-
-def simulate(filename: str, turns: int):
-    magic_fields = _read_magical_fields(filename)
-    for _ in range(0, turns):
-        magic_fields = _turn(magic_fields)
-    return magic_fields
 
 
 def _fields_str(fields: Fields):
@@ -31,7 +58,7 @@ def _fields_str(fields: Fields):
 
 def _read_magical_fields(filename: str) -> Fields:
     lines = _read_file_contents(filename)
-    return [[field for field in line] for line in lines]
+    return tuple([tuple([field for field in line]) for line in lines])
 
 
 def _read_file_contents(filename: str):
@@ -41,8 +68,13 @@ def _read_file_contents(filename: str):
                 yield line.strip()
 
 
-def _turn(fields: Fields):
-    return [[_next_value(fields, x, y) for x in range(len(fields[y]))] for y in range(len(fields))]
+def _turn(fields: Fields, cache: Cache):
+    if fields in cache:
+        return cache[fields]
+    cache[fields] = tuple(
+        [tuple([_next_value(fields, x, y) for x in range(len(fields[y]))]) for y in range(len(fields))]
+    )
+    return cache[fields]
 
 
 def _next_value(fields: Fields, x: int, y: int):
@@ -76,3 +108,4 @@ def _neighbors(fields: Fields, x: int, y: int):
 
 if __name__ == "__main__":
     print(resource_values("input", turns=10))
+    print(resource_values("input", turns=1_000_000_000))
