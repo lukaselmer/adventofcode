@@ -77,6 +77,9 @@ class OperationParams:
     b: int
     c: int
 
+    def __str__(self):
+        return f"r{self.c}=f({self.a},{self.b}) [{self.a},{self.b},{self.c}]"
+
 
 Operation = Callable[[Registers, OperationParams], None]
 

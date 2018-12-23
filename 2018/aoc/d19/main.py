@@ -8,8 +8,8 @@ Instruction = Tuple[Operation, OperationParams]
 Instructions = List[Instruction]
 
 
-def simulate(filename: str):
-    simulator = Simulator(*_read_instructions(filename))
+def simulate(filename: str, register_0_value: int):
+    simulator = Simulator(*_read_instructions(filename), register_0_value)
     while simulator.points_to_instruction:
         simulator.run_instruction()
         simulator.increase_instruction_pointer()
@@ -37,10 +37,12 @@ def _read_file_contents(filename: str):
 
 
 class Simulator:
-    def __init__(self, instruction_pointer_regiser: int, instructions: Instructions):
+    def __init__(
+        self, instruction_pointer_regiser: int, instructions: Instructions, register_0_value: int
+    ):
         self._instructions: Instructions = instructions
         self._instruction_pointer_register = instruction_pointer_regiser
-        self._registers = [0, 0, 0, 0, 0, 0]
+        self._registers = [register_0_value, 0, 0, 0, 0, 0]
         self._instruction_pointer_value = 0
 
     @property
@@ -58,6 +60,7 @@ class Simulator:
     def run_instruction(self):
         self._registers[self._instruction_pointer_register] = self._instruction_pointer_value
         operation, params = self._instructions[self.instruction_pointer_value]
+        # print(f"{self._instruction_pointer_value} {operation.__name__} {params} {self._registers}")
         operation(self._registers, params)
         self._instruction_pointer_value = self._registers[self._instruction_pointer_register]
 
@@ -65,5 +68,23 @@ class Simulator:
         self._instruction_pointer_value += 1
 
 
+def part2():
+    # r4 = 10_551_389
+    # r5 = 1
+    # while r5 <= r4:
+    #     r2 = 1
+    #     while r2 <= r4:
+    #         if r2 == r5:
+    #             r0 += r5
+    #         r2 += 1
+    #     r5 += 1
+    # return r0
+    # => inefficient!
+
+    register4 = 10_551_389
+    return sum([number for number in range(1, register4 + 1) if register4 % number == 0])
+
+
 if __name__ == "__main__":
-    print(simulate("input"))
+    print(simulate("input", 0))
+    print(part2())
