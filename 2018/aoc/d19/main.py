@@ -44,7 +44,7 @@ class Simulator:
         self._instruction_pointer_register = instruction_pointer_regiser
         self._registers = [register_0_value, 0, 0, 0, 0, 0]
         self._instruction_pointer_value = 0
-        self.blacklist = -1
+        self.watchlist = -1
         self.stuck = False
 
     @property
@@ -60,8 +60,8 @@ class Simulator:
         return self._registers[0]
 
     def run_instruction(self):
-        if self._instruction_pointer_value == self.blacklist:
-            self.stuck = True
+        if self._instruction_pointer_value == self.watchlist:
+            print(self._registers)
         self._registers[self._instruction_pointer_register] = self._instruction_pointer_value
         operation, params = self._instructions[self.instruction_pointer_value]
         # print(f"{self._instruction_pointer_value} {operation.__name__} {params} {self._registers}")
