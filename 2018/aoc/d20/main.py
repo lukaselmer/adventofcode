@@ -5,10 +5,17 @@ from typing import Set, Tuple
 from aoc.d20.maze import build_maze
 
 
-def longest_path(regex: str):
+def main():
+    regex = open("aoc/d20/input.txt").read().strip()
+    print(longest_path(regex))
+
+
+def longest_path(regex: str, count_farther_away_than: int = 1000):
     doors = build_maze(regex).doors
     opened_doors: Set[Tuple[Tuple[int, int], Tuple[int, int]]] = set()
     positions: Set[Tuple[int, int]] = {(0, 0)}
+    rooms_near: Set[Tuple[int, int]] = set()
+    rooms_all: Set[Tuple[int, int]] = set()
     counter = 0
     while doors != opened_doors:
         new_positions = set()
@@ -18,9 +25,14 @@ def longest_path(regex: str):
                     opened_doors.add(door)
                     new_positions.add(door[0])
                     new_positions.add(door[1])
+                    rooms_all.add(door[0])
+                    rooms_all.add(door[1])
+                    if counter < count_farther_away_than - 1:
+                        rooms_near.add(door[0])
+                        rooms_near.add(door[1])
         positions = new_positions
         counter += 1
-    return counter
+    return counter, len(rooms_all) - len(rooms_near)
 
 
 def _doors_from_position(position: Tuple[int, int]):
@@ -33,4 +45,4 @@ def _doors_from_position(position: Tuple[int, int]):
 
 
 if __name__ == "__main__":
-    print(longest_path(open("aoc/d20/input.txt").read().strip()))
+    main()

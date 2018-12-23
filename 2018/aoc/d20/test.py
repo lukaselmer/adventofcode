@@ -122,24 +122,24 @@ class MazeTestCase(unittest.TestCase):
 
 class LongestPathTestCase(unittest.TestCase):
     def test_longest_path_abc(self):
-        self.assertEqual(longest_path("^NN(EE)SS$"), 6)
+        self.assertEqual(longest_path("^NN(EE)SS$")[0], 6)
 
     def test_longest_path_example_1(self):
-        self.assertEqual(longest_path("^ENWWW(NEEE|SSE(EE|N))$"), 10)
+        self.assertEqual(longest_path("^ENWWW(NEEE|SSE(EE|N))$")[0], 10)
 
     def test_longest_path_example_2(self):
-        self.assertEqual(longest_path("^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$"), 23)
+        self.assertEqual(longest_path("^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$")[0], 23)
 
     def test_longest_path_example_3(self):
         self.assertEqual(
-            longest_path("^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$"), 31
+            longest_path("^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$")[0], 31
         )
 
     def test_longest_path_example_4(self):
-        self.assertEqual(longest_path("^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$"), 18)
+        self.assertEqual(longest_path("^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$")[0], 18)
 
     def test_longest_path_example_5(self):
-        self.assertEqual(longest_path("^WNE$"), 3)
+        self.assertEqual(longest_path("^WNE$")[0], 3)
 
 
 if __name__ == "__main__":
