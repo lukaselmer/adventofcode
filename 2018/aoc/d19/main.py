@@ -16,8 +16,8 @@ def simulate(filename: str, register_0_value: int):
     return simulator.register_0_value
 
 
-def _read_instructions(filename: str) -> Tuple[int, Instructions]:
-    instruction_pointer_register, *instruction_strings = _read_file_contents(filename)
+def _read_instructions(filename: str, day="19") -> Tuple[int, Instructions]:
+    instruction_pointer_register, *instruction_strings = _read_file_contents(filename, day)
     instructions = [_parse_instruction(instruction_str) for instruction_str in instruction_strings]
     return int(instruction_pointer_register), instructions
 
@@ -28,8 +28,8 @@ def _parse_instruction(instruction_str: str) -> Instruction:
     return ALL[name], params
 
 
-def _read_file_contents(filename: str):
-    with open(f"aoc/d19/{filename}.txt") as file:
+def _read_file_contents(filename: str, day: str):
+    with open(f"aoc/d{day}/{filename}.txt") as file:
         yield file.readline().replace("#ip ", "")
         for line in file.readlines():
             if line.strip():
@@ -44,6 +44,8 @@ class Simulator:
         self._instruction_pointer_register = instruction_pointer_regiser
         self._registers = [register_0_value, 0, 0, 0, 0, 0]
         self._instruction_pointer_value = 0
+        self.blacklist = -1
+        self.stuck = False
 
     @property
     def points_to_instruction(self):
@@ -58,6 +60,8 @@ class Simulator:
         return self._registers[0]
 
     def run_instruction(self):
+        if self._instruction_pointer_value == self.blacklist:
+            self.stuck = True
         self._registers[self._instruction_pointer_register] = self._instruction_pointer_value
         operation, params = self._instructions[self.instruction_pointer_value]
         # print(f"{self._instruction_pointer_value} {operation.__name__} {params} {self._registers}")
