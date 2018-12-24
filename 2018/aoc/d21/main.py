@@ -5,7 +5,7 @@ from aoc.d19.main import Simulator, _read_instructions
 
 def simulate(filename: str):
     instructions = _read_instructions(filename, "21")
-    simulator = Simulator(*instructions, 10504829)
+    simulator = Simulator(*instructions, 0)
     simulator.watchlist = 28
     while simulator.points_to_instruction:
         simulator.run_instruction()

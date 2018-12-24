@@ -37,6 +37,17 @@ else:
     r5 = 0
     goto 6
 
+
+
+
+
+
+
+
+
+
+
+
 # r5 = int(r0 == r3)         # 28 eqrr 3 0 5
 # ip = r5 + 29               # 29 addr 5 2 2
 # ip = 5                     # 30 seti 5 4 2
