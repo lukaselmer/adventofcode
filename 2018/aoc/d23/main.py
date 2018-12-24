@@ -5,10 +5,15 @@ from typing import Tuple
 from dataclasses import dataclass
 
 
+def best_position_distance(filename: str):
+    nanobots = list(_read_nanobots(filename))
+    return 42
+
+
 def nanobots_in_radius(filename: str):
     nanobots = list(_read_nanobots(filename))
     boss_nanobot = max(nanobots, key=lambda nanobot: nanobot.signal)
-    return len([nanobot for nanobot in nanobots if boss_nanobot.in_range_of(nanobot)])
+    return len([nanobot for nanobot in nanobots if boss_nanobot.in_range_of(nanobot.position)])
 
 
 def _read_nanobots(filename: str):
@@ -28,11 +33,11 @@ class Nanobot:
     signal: int
     position: Tuple[int, int, int]
 
-    def in_range_of(self, other: Nanobot):
+    def in_range_of(self, other_position: Tuple[int, int, int]):
         distance = (
-            abs(self.position[0] - other.position[0])
-            + abs(self.position[1] - other.position[1])
-            + abs(self.position[2] - other.position[2])
+            abs(self.position[0] - other_position[0])
+            + abs(self.position[1] - other_position[1])
+            + abs(self.position[2] - other_position[2])
         )
         return distance <= self.signal
 
