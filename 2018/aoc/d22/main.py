@@ -44,15 +44,6 @@ def _has_shorter_route_to_check(path: Path, goal: Step):
 
 
 def _step(cave: Cave, path: Path):
-    # print("distances")
-    # print(path.distances)
-    # print("to_check")
-    # print(path.to_check)
-    # print()
-    # could use a SortedDict instead to speed this up
-
-    # current_step, current_minutes = min(path.to_check.items(), key=lambda item: item[1])
-    # print(path.to_check)
     current = heapq.heappop(path.to_check)
     while path.to_check and path.to_check[0] == current:
         heapq.heappop(path.to_check)
@@ -176,5 +167,4 @@ class Path:
 
 if __name__ == "__main__":
     print(total_risk_level(depth=11541, target=(14, 778)))
-    # 1064 is too low
     print(shortest_path(depth=11541, target=(14, 778)))
