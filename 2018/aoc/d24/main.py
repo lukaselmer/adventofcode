@@ -11,15 +11,37 @@ IMMUNE_GROUP = "immune"
 INFECTION_GROUP = "infection"
 
 
-def count_alive_units(filename: str):
+def alive_after_minimum_boost_required(filename: str):
+    for boost in range(1, 10000):
+        result = count_alive_units(filename, boost)
+        if result[0] == "immune":
+            return result[1]
+    return None
+
+
+def count_alive_units(filename: str, boost: int):
     armies: List[Army] = list(_read_armies(filename))
+
+    for army in armies:
+        if army.group == IMMUNE_GROUP:
+            army.damage.power += boost
+
+    alive_units = sum([army.units for army in armies])
     while _opponents_are_alive(armies):
         _simulate_turn(armies)
-    return sum([army.units for army in armies])
+        alive_units_before = alive_units
+        alive_units = sum([army.units for army in armies])
+        if alive_units == alive_units_before:
+            return ("draw", -1)
+    return _alive_armies(armies)[0].group, alive_units
+
+
+def _alive_armies(armies: Armies):
+    return [army for army in armies if army.units > 0]
 
 
 def _opponents_are_alive(armies: Armies):
-    alive_armies = [army for army in armies if army.units > 0]
+    alive_armies = _alive_armies(armies)
     group = alive_armies[0].group
     for army in alive_armies:
         if army.group != group:
@@ -163,4 +185,5 @@ class Damage:
 
 
 if __name__ == "__main__":
-    print(count_alive_units("input"))
+    print(count_alive_units("input", 0))
+    print(alive_after_minimum_boost_required("input"))
