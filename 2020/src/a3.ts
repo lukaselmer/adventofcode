@@ -2,21 +2,43 @@ import { input3, input3Example } from './inputs'
 
 function main(input: string) {
   const forest = new Forest(input.split('\n'))
-  forest.simulateR3D1()
+  forest.simulate(new Point(3, 1))
   console.log(forest.encounteredTrees)
+
+  const strategies = [
+    new Point(1, 1),
+    new Point(3, 1),
+    new Point(5, 1),
+    new Point(7, 1),
+    new Point(1, 2),
+  ]
+  const total = strategies
+    .map((strategy) => {
+      forest.reset()
+      forest.simulate(strategy)
+      return forest.encounteredTrees
+    })
+    .reduce((product, scalar) => product * scalar, 1)
+  console.log(total)
 }
 
 class Forest {
-  position = new Point(-3, -1)
+  position = new Point(0, 0)
   encounteredTrees = 0
 
   constructor(private readonly lines: string[]) {}
 
-  simulateR3D1() {
+  simulate(strategy: Point) {
+    if (this.onTopOfTree) this.encounteredTrees += 1
     while (this.position.y < this.lines.length) {
-      this.position = this.position.add(new Point(3, 1))
+      this.position = this.position.add(strategy)
       if (this.onTopOfTree) this.encounteredTrees += 1
     }
+  }
+
+  reset() {
+    this.position = new Point(0, 0)
+    this.encounteredTrees = 0
   }
 
   private get onTopOfTree() {
