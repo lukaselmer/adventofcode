@@ -11,15 +11,12 @@ function countYesAnswers(group: string) {
     group
       .split('\n')
       .flatMap((formContents) => new Set(formContents.split('')))
-      .reduce<null | Set<string>>(
-        (previous, current) => (previous ? intersection(previous, current) : current),
-        null
-      )?.size || 0
+      .reduce<null | Set<string>>(intersection, null)?.size || 0
   )
 }
 
-function intersection<T>(a: Set<T>, b: Set<T>) {
-  return new Set([...a].filter((value) => b.has(value)))
+function intersection<T>(a: Set<T> | null, b: Set<T>) {
+  return a ? new Set([...a].filter((value) => b.has(value))) : b
 }
 
 main(input6Example)
