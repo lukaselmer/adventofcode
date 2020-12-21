@@ -1,4 +1,4 @@
-import { input7, input7Example } from './inputs'
+import { input7, input7Example1 } from './inputs'
 import { parseInt10 } from './shared/input-helper'
 
 function main(input: string) {
@@ -49,5 +49,5 @@ function extractMapping(parsed: { id: string; contents: { amount: number; id: st
   return mappingContainedBy
 }
 
-main(input7Example)
+main(input7Example1)
 main(input7)
