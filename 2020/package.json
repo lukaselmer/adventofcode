@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/a11s1.ts"
+    "start": "ts-node src/a11s2.ts"
   },
   "dependencies": {
     "@types/lodash": "^4.14.162",
