@@ -26,13 +26,11 @@ function process(instruction: Instruction, state: State) {
   else if (instruction.type === 'W') moveWaypoint(state, { x: -instruction.value, y: 0 })
   else if (instruction.type === 'N') moveWaypoint(state, { x: 0, y: instruction.value })
   else if (instruction.type === 'S') moveWaypoint(state, { x: 0, y: -instruction.value })
-  else if (instruction.type === 'R') state.waypoint = rotate(instruction.value, state)
+  else if (instruction.type === 'R') state.waypoint = rotate(instruction.value, state.waypoint)
 }
 
-function rotate(value: number, { ship, waypoint }: State): Point {
-  if (value === 0) return waypoint
-  const newWaypoint = { x: waypoint.y, y: -waypoint.x }
-  return rotate(value - 90, { ship, waypoint: newWaypoint })
+function rotate(value: number, point: Point): Point {
+  return value === 0 ? point : rotate(value - 90, { x: point.y, y: -point.x })
 }
 
 function moveWaypoint(state: State, movement: Point) {
