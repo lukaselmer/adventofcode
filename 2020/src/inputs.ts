@@ -9026,3 +9026,9 @@ S1
 L90
 R180
 F37`
+
+export const input13Example = [939, '7,13,x,x,59,x,31,19'] as const
+export const input13 = [
+  1007153,
+  '29,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,37,x,x,x,x,x,433,x,x,x,x,x,x,x,x,x,x,x,x,13,17,x,x,x,x,19,x,x,x,23,x,x,x,x,x,x,x,977,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,41',
+] as const
